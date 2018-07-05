@@ -37,7 +37,7 @@
 
 <script type="text/javascript">
    var MIN_LEVEL = 0;
-   var MAX_LEVEL = 12;
+   var MAX_LEVEL = 16;
 
    function updateZoomLevel() {
       $("#zoom_level").html("Level " + map.getZoom())
@@ -48,15 +48,20 @@
    });
 
    var tilesets = {
-      "klokantech-basic-cpb" : L.tileLayer('./tiles/klokantech-basic-cpb/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
-      "klokantech-basic-cpb-2x" : L.tileLayer('./tiles/klokantech-basic-cpb-2x/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
-      "dark-matter-cpb" : L.tileLayer('./tiles/dark-matter-cpb/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
-      "dark-matter-cpb-2x" : L.tileLayer('./tiles/dark-matter-cpb-2x/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "positron--nl-simplified-labels" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/positron-nl-simplified-labels/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "positron-nl-no-labels" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/positron-nl-no-labels/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "positron-nl" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/positron-nl/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "osm-bright-nl" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/osm-bright-nl/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "klokantech-basic-nl" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/klokantech-basic-nl/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "klokantech-basic-cpb-nl-simplified-labels" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/klokantech-basic-cpb-nl-simplified-labels/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "klokantech-basic-cpb-nl-no-labels" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/klokantech-basic-cpb-nl-no-labels/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "dark-matter-nl" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/dark-matter-nl/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "dark-matter-cpb-nl" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/dark-matter-cpb-nl/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL }),
+      "dark-matter-cpb-nl-no-labels" : L.tileLayer('file:////home/ingmar/tile-generation/tile-fetcher/tiles/dark-matter-cpb-nl-no-labels/{z}/{x}/{y}.png', { maxZoom : MAX_LEVEL })
    };
-
    var map = L.map('map', {
-      layers : [tilesets['klokantech-basic-cpb']]
-   }).setView([0,0], 2);
+      layers : [tilesets['positron-nl-simplified-labels', 'positron-nl-no-labels', 'positron-nl', 'osm-bright-nl', 'klokantech-basic-nl', 'dark-matter-nl', 'dark-matter-cpb-nl', 'dark-matter-cpb-nl-no-labels', 'klokantech-basic-cpb-nl-simplified-labels', 'klokantech-basic-cpb-nl-no-labels']]
+   }).setView([52.092876,5.104480], 6);
 
    map.options.minZoom = MIN_LEVEL;
    map.options.maxZoom = MAX_LEVEL;
@@ -64,7 +69,6 @@
    map.on('zoomend', updateZoomLevel);
 
    L.control.layers(tilesets, null, { position : 'bottomright' }).addTo(map);
-
 </script>
 </body>
 </html>
