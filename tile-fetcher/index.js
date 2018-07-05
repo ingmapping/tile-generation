@@ -4,7 +4,7 @@ const packageJson = require('./package.json');
 const TileFetcher = require('./TileFetcher');
 
 const MIN_LEVEL = 0;
-const MAX_LEVEL = 14;
+const MAX_LEVEL = 16;
 const DEFAULT_NUM_FETCHERS = 6;
 const DEFAULT_HOST = 'localhost';
 const DEFAULT_PORT = 8080;
