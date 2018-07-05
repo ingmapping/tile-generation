@@ -77,11 +77,11 @@ There are four tileserver-gl configuration files for the styles included here pl
     tileserver-gl-config-planet.json
     tileserver-gl-config-north-america_us.json
     tileserver-gl-config-europe_great-britain.json
-    tileserver-gl-config-europe__the_netherlands.json
+    tileserver-gl-config-europe_the_netherlands.json
   
 If the mbtiles files you downloaded have filenames different than what's referenced in the above JSON config files, you'll need to fix the config file(s) accordingly. So please take a look at the bounding box and paths to the config files.
 
-For this project the tileserver-gl-config-europe__the_netherlands.json config file was used to generate tiles for the Netherlands. 
+For this project the tileserver-gl-config-europe_the_netherlands.json config file was used to generate tiles for the Netherlands. 
 
 #### Running Tileserver GL
 
@@ -99,7 +99,7 @@ or
 
 or
 
-    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-europe__the_netherlands.json
+    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-europe_the_netherlands.json
    
 Brief description of some of the parts of those commands:
 * `-v $(pwd):/createlab` Mounts a volume in Docker named `/createlab` and binds it to the current directory.  This lets us reference files in the Mac OS filesystem from tileserver-gl. Notice the various paths in the tileserver-gl config files which start with `/createlab`
