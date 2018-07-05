@@ -1,84 +1,24 @@
 # Generating Raster Tiles from Vector Map Data
 
-A collection of tools--with (hopefully) clear documentation--for generating raster map tiles from vector map data and a Mapbox GL style.
+This project was forked from [CMU-CREATE-Lab/tile-generation](https://github.com/CMU-CREATE-Lab/tile-generation). Credits to the awesome guys of CMU-CREATE-Lab and OpenMapTiles/Klokantech technologies. 
+
+This project contains a collection of tools--with documentation--for generating raster map tiles from vector map data and a Mapbox GL style.
 
 The toolchain consists of [Maputnik](https://github.com/maputnik/editor) for creating/editing Mapbox GL styles, [Tileserver GL](https://openmaptiles.org/docs/host/tileserver-gl/) to apply the style(s) to [vector map data](https://openmaptiles.com/downloads/planet/) and serve up raster tiles, and a custom script to scrape and save the tiles as PNGs.
 
 ## How to Generate Tiles
 
-Here's everything you'll need to do to generate tiles.  Some stuff I've already done for you and included in this project.  I'll walk you through the rest.
+Here's everything you'll need to do to generate tiles.  This project is great for everyone who is struggling to find the right stack to pre-generate raster tiles from vector map data. See discussion here: https://gis.stackexchange.com/questions/252338/render-raster-tiles-from-a-mapbox-gl-style?rq=1. In summary, with this project there is no need anymore for CartoCSS or Mapnik XML, but styling can be done with Mapbox GL styles, while also having the ability to pre-generate old-fashioned raster tiles for hosting them elsewhere on the web. 
 
 ### Tileserver GL
 
-First, you'll need Tileserver GL installed.  There are at least a couple ways to install, but apparently using Docker is the easiest. Go ahead and skip to that section below unless you want details on what doesn't work.
-
-#### Installing with Node.js
-
-The tl;dr is that you shouldn't even bother trying to just do the simple `npm install -g tileserver-gl` method.  You'll go crazy.  If you use Node.js 8.x, it'll fail due to a 403 when pulling one of the assets.  Turns out you need to have Node 6.x (see https://github.com/klokantech/tileserver-gl/issues/216).  I switched to Node.js 6.12.1 and retried and, hey, guess what?!?  That failed too with this lovely error:
-
-`ENOENT: no such file or directory, rename '/Users/chris/n/lib/node_modules/.staging/@mapbox/point-geometry-c12f351f' -> '/Users/chris/n/lib/node_modules/tileserver-gl/node_modules/@mapbox/point-geometry'`
-
-Googling that and you'll find a bunch of posts which pretty much just say, "screw it, man, just use docker".  So, using Docker...
+First, you'll need Tileserver GL installed.  There are at least a couple ways to install, but using Docker is the easiest. Go ahead and skip to that section below unless you want details on what doesn't work.
 
 #### Installing with Docker
 
-Despite complaints from coworkers about how annoying Docker is, it seems to be my best (only?) option for the Mac, so I installed [Docker](https://docs.docker.com/docker-for-mac/install/#download-docker-for-mac), ran it, and logged in.
-
-Following the instructions at [https://openmaptiles.org/docs/host/tileserver-gl/](https://openmaptiles.org/docs/host/tileserver-gl/), I tried installing tileserver-gl by doing this:
+Following the instructions at [https://openmaptiles.org/docs/host/tileserver-gl/](https://openmaptiles.org/docs/host/tileserver-gl/), tileserver-gl can be installed by doing this:
 
 	docker pull klokantech/tileserver-gl
-
-Since nothing can ever just be easy, that failed with this error:
-
-```
-$ docker pull klokantech/tileserver-gl
-Using default tag: latest
-Error response from daemon: Get https://registry-1.docker.io/v2/klokantech/tileserver-gl/manifests/latest: unauthorized: incorrect username or password
-```
-
-Hmmm, so even though I was logged in to Docker in the menu item thing, maybe I need to log in on the command line too? So I tried this:
-
-```
-$ docker login
-Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
-Username (bartley@cmu.edu): 
-Password: 
-Error response from daemon: Get https://registry-1.docker.io/v2/: unauthorized: incorrect username or password
-```
-
-OK, now that's just weird.  I tried again, this time with my username instead of my email address:
-
-```
-$ docker login
-Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
-Username (bartley@cmu.edu): chrisbartley
-Password: 
-Login Succeeded
-```
-
-I'm beginning to understand why my coworkers complain abut Docker [sigh].  Anyway, after that, the installation of tileserver-gl worked fine:
-
-```
-$ docker pull klokantech/tileserver-gl
-Using default tag: latest
-latest: Pulling from klokantech/tileserver-gl
-3e731ddb7fc9: Pull complete 
-47cafa6a79d0: Pull complete 
-79fcf5a213c7: Pull complete 
-68e99216b7ad: Pull complete 
-4822563608bb: Pull complete 
-bd223a5eb9f8: Pull complete 
-af1ecaa3fb91: Pull complete 
-ab24011f6a41: Pull complete 
-0f94701268e1: Pull complete 
-e7c634c94e3f: Pull complete 
-b1c059f00dd4: Pull complete 
-09313f85da09: Pull complete 
-b63ade49cecb: Pull complete 
-5d6c8934e668: Pull complete 
-Digest: sha256:12b907724940051ffb2ca7dfe82c7da9e4e51e84556f5514173858e407e8f81c
-Status: Downloaded newer image for klokantech/tileserver-gl:latest
-```
 
 #### Other Required Pieces
 
@@ -86,7 +26,7 @@ Before trying to run it, you'll need to download some required bits, just becaus
 
 ##### Map Data
 
-You'll need vector map data.  If you want the whole planet, you'd better have both time and disk space...it's ~51 GB.  I did my initial tests with two different datasets: the United States and Great Britain.  They're large, 6.7GB and 1.2GB respectively, so they're not included here.  You'll need to download the .mbtiles archives from OpenMapTiles here:
+You'll need vector map data. Fortunaly, we have the awesome OpenMapTiles and OpenStreetMap contributors! If you want vector map data for the whole planet, you'd better have both time and disk space...it's ~51 GB. Initial tests with two different datasets: the United States and Great Britain were done by [CMU-CREATE-Lab/tile-generation](https://github.com/CMU-CREATE-Lab/tile-generation). In this project, tests were done with The Netherlands. All datasets are large, 6.7GB, 1.2GB and 954,6 MB respectively, so they're not included here.  You'll need to download the .mbtiles archives from OpenMapTiles here:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Whole Planet<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://openmaptiles.com/downloads/planet/
@@ -96,6 +36,9 @@ You'll need vector map data.  If you want the whole planet, you'd better have bo
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Great Britain<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://openmaptiles.com/downloads/europe/great-britain/
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The Netherlands<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://openmaptiles.com/downloads/europe/netherlands/
 
 Just save them into the `tileserver-gl/mbtiles` directory in this project.
 
@@ -109,7 +52,7 @@ Extract the zip into a directory named `fonts` located under the `tileserver-gl`
 
 ##### Styles
 
-I've already downloaded and included some styles in the project, but here's where I found them.
+I've already downloaded and included some styles in the project, but here's where they can be found.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Klokantech Basic v1.3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://github.com/openmaptiles/klokantech-basic-gl-style/releases
@@ -123,17 +66,22 @@ I've already downloaded and included some styles in the project, but here's wher
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dark Matter v1.3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://github.com/openmaptiles/dark-matter-gl-style/releases
 
-I've also included some styles of my own based on some of the above.  
+I've also included some styles of my own based on some of the above and based on the styles added by [CMU-CREATE-Lab/tile-generation](https://github.com/CMU-CREATE-Lab/tile-generation). My custom styles are positron-simplified-labels, positron-no-labels, klokantech-basic-cpb-simplified-labels. These styles were made for generating great basemaps for the Netherlands. Note that place name labels have been optimized for use with the map extent of the Netherlands. In the default styles random cities were displaying at low zoom level and in my opinion there were just too many labels. Less is more sometimes. 
+
+The bounds used for the Netherlands: 3.0847 (left/min Longitude/west/minX), 50.7395 (bottom/min Latitude/south/minY), 7.2693 (right/max Longitude/east/MaxX), 53.7355 (top/max Latitude/north/MaxY).
 
 ##### Config
 
-I've included three tileserver-gl configuration files for the styles included here plus the map data and fonts you downloaded above:
+There are four tileserver-gl configuration files for the styles included here plus the map data and fonts you downloaded above:
     
     tileserver-gl-config-planet.json
     tileserver-gl-config-north-america_us.json
     tileserver-gl-config-europe_great-britain.json
+    tileserver-gl-config-europe__the_netherlands.json
   
-If the mbtiles files you downloaded have filenames different than what's referenced in the above JSON config files, you'll need to fix the config file(s) accordingly.
+If the mbtiles files you downloaded have filenames different than what's referenced in the above JSON config files, you'll need to fix the config file(s) accordingly. So please take a look at the bounding box and paths to the config files.
+
+For this project the tileserver-gl-config-europe__the_netherlands.json config file was used to generate tiles for the Netherlands. 
 
 #### Running Tileserver GL
 
@@ -148,6 +96,10 @@ or
 or
 
     docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-europe_great-britain.json
+
+or
+
+    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-europe__the_netherlands.json
    
 Brief description of some of the parts of those commands:
 * `-v $(pwd):/createlab` Mounts a volume in Docker named `/createlab` and binds it to the current directory.  This lets us reference files in the Mac OS filesystem from tileserver-gl. Notice the various paths in the tileserver-gl config files which start with `/createlab`
@@ -158,21 +110,13 @@ Once it's running, test it out by opening a browser and going to [http://localho
 
 ### Maputnik
 
-Maputnik is a really nice, browser-based editor for Mapbox GL styles.  If you're happy with the styles included here, you can skip this entire section and just jump down to the **Generating Tiles** section below.
+Maputnik is a really nice, browser-based editor for Mapbox GL styles. If you're happy with the styles included here, you can skip this entire section and just jump down to the **Generating Tiles** section below.
 
-#### Installing Maputnik
+You can install Maputnik: https://github.com/maputnik/editor
 
-The tl;dr is to just use a prebuilt binary.  And if you're on a Mac, I've included one in the project.  Now for the longer story...
-
-Instructions for installing are here:
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://github.com/maputnik/editor
-
-What they don't make clear is that installing it fails with both Node.js 4.x and 6.x.  I finally got it installed with Node.js 8.9.2.  But, they also don't make clear how you can use this version to edit an existing file, other than doing an "upload".  The pre-built binary version has an option to specify a JSON style file, and even watch for external changes to that file.  That's easier, so just use the latest prebuilt binary, which you'll find here (I'm using `maputnik_darwin` v1.0.1):
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://github.com/maputnik/editor/releases
-
-I've included the binary in this project, so if you're on a Mac you shouldn't need to do anything, just run it.  
+However, save yourself some time and use the online editor in the browser (recommended):
+https://maputnik.github.io/
+https://editor.openmaptiles.org/
 
 #### Slight Wrinkle
 
@@ -227,48 +171,20 @@ Finally, the `style-local.json` is just for Tileserver GL (and is referenced in 
 
 The most important thing to remember is that, once you get the style working how you want it--regardless of whether you're using the local or remote maputnik style file--you *must* apply those changes to the other two style files.  And be sure to also fire up Tileserver GL to check your work.  I've seen cases where Maputnik and Tileserver GL interpret the style JSON differently.
 
-#### Bug Fixing
-
-You may notice that the Dark Matter CPB and Klokantech Basic CPB styles have two extra `style-local-*` files, one for fixing clipped countries, and another for fixing clipped states.  I noticed at levels 0-2 that the label for New Zealand would get clipped and appear as "New Zeala".  Similarly, the labels for Pennsylvania and Mississippi would get clipped at level 4.  These extra style files simply remove the labels for those problem labels altogether.  There's probably a more efficient way of doing it, combining it all into a single style file with more rules.  I tried that, and it seemed to work in Maputnik, but then didn't work in Tileserver GL, maybe because they interpret the rule cascading differently?  Anyway, for my final tileset, it was easy enough to just create separate style files and then generate levels 0-2 with `style-local-fixed-clipped-countries.json`, levels 3 and 5-12 with `style-local.json`, and level 4 with `style-local-fixed-clipped-states.json`.
-
-**Update**: I've figured out how to merge these clipped name fixes into the same style file as the main one, and have done so for `dark-matter-cpb-english-only-gl-style` and `klokantech-basic-cpb-english-only-gl-style`.
-
-#### Running Maputnik
-
-From this project's root directory, launch Maputnik to edit the OSM Bright CPB style with:
-
-```
-./maputnik/maputnik_darwin --watch --file ./tileserver-gl/styles/osm-bright-cpb-gl-style/maputnik-style-local.json
-```
-
-For the Klokantech Basic CPB style, launch with:
-
-```
-./maputnik/maputnik_darwin --watch --file ./tileserver-gl/styles/klokantech-basic-cpb-gl-style/maputnik-style-local.json
-```
-
-For the Dark Matter CPB style, launch with:
-
-```
-./maputnik/maputnik_darwin --watch --file ./tileserver-gl/styles/dark-matter-cpb-gl-style/maputnik-style-local.json
-```
-
-Then open a browser and go to [http://localhost:8000](http://localhost:8000).
-
 If you make changes, don't forget to apply them (but not the three URLs shown above!) to `style-local.json`.
 
 #### The Style Editing and Verification Process
 
 Here's what to do to edit a style:
-1. Run Maputnik, pointed at the maputnik version of the style you want to edit. The "maputnik version" just means those three URLs are pointing to the cloud rather than local. In this repo, that's the `maputnik-style-local.json` file.
+1. Use Maputnik, pointed at the maputnik version of the style you want to edit. The "maputnik version" just means those three URLs are pointing to the cloud rather than local. In this repo, that's the `maputnik-style-local.json` file.
 2. Copy style changes to the tileserver-gl version of the style. In this repo, that's the `style-local.json` file.
 3. Run tileserver-gl, and verify that your style looks good with the vector map data you have.
 
 ### Generating and Fetching Tiles
 
-At long last, we can finally generate and fetch the tiles...
+At long last, we can finally generate and fetch the tiles... (this part is great!)
 
-It's simple enough to just write a script to fetch all tiles for a given level and lat/long bounding box directly from Tileserver GL, so that's what I did.  It's a Node.js script in the `tile-fetcher` directory. I used Node.js 8.9.2, but it might work for other versions.  
+The script in the `tile-fetcher` directory fetches all tiles for a given level and lat/long bounding box directly from Tileserver GL.  It's a Node.js script, with Node.js 8.9.2, but it might work for other versions.  
 
 #### Installation
 
@@ -286,8 +202,9 @@ You specify the bounding box, levels, style, etc. through command line arguments
 | Option | Description |
 |--------|-------------|
 |`--style  <Style name>`|The map style name, as it appears in the Tileserver GL tile URL, e.g. `klokantech-basic-cpb`.|
-|`--level  <Zoom level(s)>`|Zoom level(s) to fetch.  Must be in the range [0,14]. Specify multiple levels as a comma-delimted list, a range, or a combination of the two.|
+|`--level  <Zoom level(s)>`|Zoom level(s) to fetch.  Must be in the range [0,16]. Specify multiple levels as a comma-delimited list, a range, or a combination of the two.|
 |`--dir    <Output directory> `|Directory in which tiles will be saved.|
+
 
 Here are the optional options:
 
@@ -330,6 +247,19 @@ The above command would fetch only 2038 of the 4096 tiles in level 6.
 
 Note that the starting tile option is only honored when requesting a single level.
 
+#### Generating tiles for the Netherlands
+
+Here an example of how to make a tiled basemap for the Netherlands (if you have tileserver-gl listening on port 8080 with the tileserver-gl-config-europe__the_netherlands.json config file). The command below generates and fetches levels 0-8 for the entire Earth, and levels 9-14 for the bounding box of the Netherlands, using the `positron-simplified-labels` style.
+
+```
+cd ~/tile-generation/tile-fetcher/
+node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 0-8 
+node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 9-14 --west 3.0847 --east 7.2693 --south 50.7395 --north 53.7355
+```
+
 #### Viewing Tiles
 
-Once you have some tiles generated and fetched, you can preview them using the `tile-viewer.html` file (also in the `tile-fetcher` directory), which you may need to edit according to where you saved your tiles.
+Once you have some tiles generated and fetched, you can preview them using the `tile-viewer.html` file (also in the `tile-fetcher` directory). I've modified this leaflet tile viewer for my own use, so you may need to edit according to where you saved your tiles.
+
+
+
