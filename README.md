@@ -70,14 +70,17 @@ I've also included some styles of my own based on some of the above and based on
 
 The bounds used for the Netherlands: 3.0847 (left/min Longitude/west/minX), 50.7395 (bottom/min Latitude/south/minY), 7.2693 (right/max Longitude/east/MaxX), 53.7355 (top/max Latitude/north/MaxY).
 
+The bounds used for the ABC islands: 70.399 (left/min Longitude/west/minX), 12.0002 (bottom/min Latitude/south/minY), -68.0019 (right/max Longitude/east/MaxX), 12.9923 (top/max Latitude/north/MaxY). 
+
 ##### Config
 
-There are four tileserver-gl configuration files for the styles included here plus the map data and fonts you downloaded above:
+There are five tileserver-gl configuration files for the styles included here plus the map data and fonts you downloaded above:
     
     tileserver-gl-config-planet.json
     tileserver-gl-config-north-america_us.json
     tileserver-gl-config-europe_great-britain.json
     tileserver-gl-config-europe_the_netherlands.json
+    tileserver-gl-config-abceilanden.json
   
 If the mbtiles files you downloaded have filenames different than what's referenced in the above JSON config files, you'll need to fix the config file(s) accordingly. So please take a look at the bounding box and paths to the config files.
 
@@ -100,6 +103,11 @@ or
 or
 
     docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-europe_the_netherlands.json
+
+or
+
+    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-abceilanden.json
+
    
 Brief description of some of the parts of those commands:
 * `-v $(pwd):/createlab` Mounts a volume in Docker named `/createlab` and binds it to the current directory.  This lets us reference files in the Mac OS filesystem from tileserver-gl. Notice the various paths in the tileserver-gl config files which start with `/createlab`
@@ -249,12 +257,21 @@ Note that the starting tile option is only honored when requesting a single leve
 
 #### Generating tiles for the Netherlands
 
-Here an example of how to make a tiled basemap for the Netherlands (if you have tileserver-gl listening on port 8080 with the tileserver-gl-config-europe__the_netherlands.json config file). The command below generates and fetches levels 0-8 for the entire Earth, and levels 9-14 for the bounding box of the Netherlands, using the `positron-simplified-labels` style.
+Here an example of how to make a tiled basemap for the Netherlands (if you have tileserver-gl listening on port 8080 with the tileserver-gl-config-europe_the_netherlands.json config file). The command below generates and fetches levels 0-8 for the entire Earth, and levels 9-14 for the bounding box of the Netherlands, using the `positron-simplified-labels` style.
 
 ```
 cd ~/tile-generation/tile-fetcher/
 node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 0-8 
 node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 9-14 --west 3.0847 --east 7.2693 --south 50.7395 --north 53.7355
+```
+#### Generating tiles for the Aruba, Bonaire, Curacao (ABC-eilanden)
+
+Here an example of how to make a tiled basemap for the ABC islands (if you have tileserver-gl listening on port 8080 with the tileserver-gl-config-abceilanden.json config file). The command below generates and fetches levels 0-8 for the entire Earth, and levels 9-14 for the bounding box of the ABC islands, using the `positron-simplified-labels` style.
+
+```
+cd ~/tile-generation/tile-fetcher/
+node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 0-8 
+node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 9-14 --west -70.3997 --east -68.0019 --south 12.0002 --north 12.9923
 ```
 
 #### Viewing Tiles
