@@ -12,7 +12,7 @@ Here's everything you'll need to do to generate tiles.  This project is great fo
 
 ### Tileserver GL
 
-First, you'll need Tileserver GL installed.  There are at least a couple ways to install, but using Docker is the easiest. Go ahead and skip to that section below unless you want details on what doesn't work.
+First, you'll need Tileserver GL installed.  There are at least a couple ways to install, but using Docker is the easiest.
 
 #### Installing with Docker
 
