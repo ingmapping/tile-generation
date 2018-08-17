@@ -264,15 +264,44 @@ cd ~/tile-generation/tile-fetcher/
 node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 0-8 
 node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 9-14 --west 3.0847 --east 7.2693 --south 50.7395 --north 53.7355
 ```
+
 #### Generating tiles for the Aruba, Bonaire, Curacao (ABC-eilanden)
 
-Here an example of how to make a tiled basemap for the ABC islands (if you have tileserver-gl listening on port 8080 with the tileserver-gl-config-abceilanden.json config file). The command below generates and fetches levels 0-8 for the entire Earth, and levels 9-14 for the bounding box of the ABC islands, using the `positron-simplified-labels` style.
+Here an example of how to make a tiled basemap for the ABC islands (if you have tileserver-gl listening on port 8080 with the tileserver-gl-config-abceilanden.json config file). The command below generates and fetches levels 0-8 for the entire Earth, and levels 9-14 for the bounding box of the ABC islands, using the `positron-simplified-labels` style. 
 
 ```
 cd ~/tile-generation/tile-fetcher/
 node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 0-8 
 node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 9-14 --west -70.3997 --east -68.0019 --south 12.0002 --north 12.9923
 ```
+Please note that you would first need mbtiles of the custom extract of the ABC-islands. 
+
+```
+npm install -g tilelive mbtiles
+```
+```
+tilelive-copy --minzoom=0 --maxzoom=14 --bounds="-70.3997,12.0002, -68.0019, 12.9923" tile-generation/tileserver-gl/mbtiles/planet.mbtiles tile-generation/tileserver-gl/mbtiles/abceilanden.mbtiles
+```
+More info on https://openmaptiles.org/docs/generate/create-custom-extract/.
+
+#### Generating tiles for BES islands (BES-eilanden)
+
+Here an example of how to make a tiled basemap for the BES islands (if you have tileserver-gl listening on port 8080 with the tileserver-gl-config-abceilanden.json config file). The command below generates and fetches levels 0-8 for the entire Earth, and levels 9-14 for the bounding box of the BES islands, using the `positron-simplified-labels` style.
+
+```
+cd ~/tile-generation/tile-fetcher/
+node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 0-8 
+node index.js --style positron-simplified-labels  --dir ./tiles/positron-simplified-labels --level 9-14 --west -63.5967 --east -62.4047 --south 17.0072 --north 18.3933
+```
+Please note that you would first need mbtiles of the custom extract of the BES-islands. 
+
+```
+npm install -g tilelive mbtiles
+```
+```
+tilelive-copy --minzoom=0 --maxzoom=14 --bounds="-70.3997,12.0002, -68.0019, 12.9923" tile-generation/tileserver-gl/mbtiles/planet.mbtiles tile-generation/tileserver-gl/mbtiles/abceilanden.mbtiles
+```
+More info on https://openmaptiles.org/docs/generate/create-custom-extract/. 
 
 #### Viewing Tiles
 
