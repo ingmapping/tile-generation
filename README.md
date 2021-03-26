@@ -18,7 +18,9 @@ First, you'll need Tileserver GL installed.  There are at least a couple ways to
 
 Following the instructions at [https://openmaptiles.org/docs/host/tileserver-gl/](https://openmaptiles.org/docs/host/tileserver-gl/), tileserver-gl can be installed by doing this:
 
-	docker pull klokantech/tileserver-gl
+	docker pull klokantech/tileserver-gl:v2.4.0
+
+I used v2.4.0 here due to problems with labels cuting off at tiles edges while rendering raster tiles on later versions of tileserver-gl. Seems to be a problem with mapbox-native-gl since realease v2.5. For vector tiles no issues. 
 
 #### Other Required Pieces
 
@@ -90,23 +92,23 @@ For this project the tileserver-gl-config-europe_the_netherlands.json config fil
 
 Now that all the pieces are in place, you should be able to run tileserver-gl and explore the map data with each of the various styles.  Open a terminal window and `cd` to the `tileserver-gl` directory of this project and run one of these commands, depending on which data set you want to view:
 
-    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-planet.json
+    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl:v2.4.0 --config /createlab/tileserver-gl-config-planet.json
 
 or
 
-    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-north-america_us.json
+    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl:v2.4.0 --config /createlab/tileserver-gl-config-north-america_us.json
 
 or
 
-    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-europe_great-britain.json
+    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl:v2.4.0 --config /createlab/tileserver-gl-config-europe_great-britain.json
 
 or
 
-    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-europe_the_netherlands.json
+    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl:v2.4.0 --config /createlab/tileserver-gl-config-europe_the_netherlands.json
 
 or
 
-    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl --config /createlab/tileserver-gl-config-abceilanden.json
+    docker run --rm -it -v $(pwd):/createlab -p 8080:80 klokantech/tileserver-gl:v2.4.0 --config /createlab/tileserver-gl-config-abceilanden.json
 
    
 Brief description of some of the parts of those commands:
@@ -299,7 +301,7 @@ Please note that you would first need mbtiles of the custom extract of the BES-i
 npm install -g tilelive mbtiles
 ```
 ```
-tilelive-copy --minzoom=0 --maxzoom=14 --bounds="-70.3997,12.0002, -68.0019, 12.9923" tile-generation/tileserver-gl/mbtiles/planet.mbtiles tile-generation/tileserver-gl/mbtiles/abceilanden.mbtiles
+tilelive-copy --minzoom=0 --maxzoom=14 --bounds="-63.5967, 17.0072, -68.0019, 18.3933" tile-generation/tileserver-gl/mbtiles/planet.mbtiles tile-generation/tileserver-gl/mbtiles/abceilanden.mbtiles
 ```
 More info on https://openmaptiles.org/docs/generate/create-custom-extract/. 
 
